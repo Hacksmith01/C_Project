@@ -1,0 +1,83 @@
+#include<stdio.h>
+
+#define ROWS 10
+#define COLS 10
+
+#define PATH ' '
+#define WALL '|'
+#define START 'S'
+#define END 'E'
+#define VISITED ':'
+
+char maze[ROWS][COLS] = {
+    {START, PATH, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL},
+    {WALL, PATH, PATH, PATH, WALL, PATH, PATH, PATH, PATH, WALL},
+    {WALL, WALL, WALL, PATH, WALL, PATH, WALL, WALL, PATH, WALL},
+    {WALL, PATH, PATH, PATH, WALL, PATH, WALL, PATH, PATH, WALL},
+    {WALL, PATH, WALL, PATH, WALL, WALL, WALL, PATH, WALL, WALL},
+    {WALL, PATH, WALL, PATH, PATH, PATH, PATH, PATH, WALL, WALL},
+    {WALL, WALL, WALL, WALL, WALL, PATH, WALL, WALL, WALL, WALL},
+    {WALL, PATH, PATH, PATH, WALL, PATH, PATH, PATH, PATH, WALL},
+    {WALL, PATH, WALL, PATH, PATH, PATH, WALL, WALL, PATH, END},
+    {WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL}
+};
+
+int dx[]={0,1,0,-1};
+int dy[]={1,0,-1,0};
+
+int isValid(int x, int y)
+{
+    return (x>=0 && x<ROWS && y>=0 && y<COLS &&
+    (maze[x][y] == PATH || maze[x][y] == END));
+}
+
+void displayMaze()
+{
+    for(int i=0;i<ROWS;i++)
+    {
+        for(int j=0;j<COLS;j++)
+        {
+            printf("%c",maze[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int solveMaze(int x, int y) {
+    if (maze[x][y] == END) {
+        return 1; 
+    }
+
+    maze[x][y] = VISITED; 
+
+    for (int i = 0; i < 4; i++) {
+        int newX = x + dx[i];
+        int newY = y + dy[i];
+
+        if (isValid(newX, newY)) {
+            if (solveMaze(newX, newY)) {
+                return 1; 
+            }
+        }
+    }
+
+    maze[x][y] = PATH; 
+    return 0;
+}
+
+int main()
+{
+    printf("Original Maze: \n");
+    displayMaze();
+    
+    if(solveMaze(0,0))
+    {
+        printf("\nPath to exit found!!\n");
+    }
+    else
+    {
+        printf("\nNo path to the exit found.\n");
+    }
+    displayMaze();
+    return 0;
+}
